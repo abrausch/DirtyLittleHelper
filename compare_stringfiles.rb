@@ -1,5 +1,9 @@
 require 'rake'
 
+# Sample call
+# ruby compare_stringfiles.rb Resources/de.lproj/Localizable.strings Resources/pl.lproj/Localizable.strings
+# ruby compare_stringfiles.rb "Sources/**/de.lproj/*.strings" "Sources/**/pl.lproj/*.strings"
+
 BASE_STRING_LIST = FileList[ARGV[0]]
 
 compare_string_list = []
