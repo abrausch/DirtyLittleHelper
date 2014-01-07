@@ -9,6 +9,7 @@ ARGV.each do|a|
   counter = 0;
   File.open(a, "r") do |infile|
     firstline = true
+    i = 0
     while (line = infile.gets)
       #a new crash report starts
       if line.include? "<crash>"
@@ -16,7 +17,8 @@ ARGV.each do|a|
       end
 
       if line.include? "[TODO]"
-        line.gsub!("[TODO]", SecureRandom.uuid)
+        line.gsub!("[TODO]", i.to_s)
+        i = i + 1
       end
 
       if (!xmlString.nil?)
