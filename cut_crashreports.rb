@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 
+require 'securerandom'
 require 'rexml/document'
 
 
@@ -8,13 +9,17 @@ ARGV.each do|a|
   counter = 0;
   File.open(a, "r") do |infile|
     firstline = true
-    while (line = infile.gets)      
+    while (line = infile.gets)
       #a new crash report starts
       if line.include? "<crash>"
         xmlString = ""
-      end     
+      end
 
-      if (!xmlString.nil?)   
+      if line.include? "[TODO]"
+        line.gsub!("[TODO]", SecureRandom.uuid)
+      end
+
+      if (!xmlString.nil?)
         xmlString << line
       end
 
@@ -22,23 +27,23 @@ ARGV.each do|a|
         systemversion = "unknown"
         doc = REXML::Document.new(xmlString)
         system = doc.root.elements[3].text
-        version = doc.root.elements[5].text        
-        
+        version = doc.root.elements[5].text
+
         puts version
-        
+
         if (!File.directory?(version))
           Dir.mkdir(version)
         end
-        
+
         if (!File.directory?("#{version}/#{system}"))
           Dir.mkdir("#{version}/#{system}")
         end
 
         fileName = "#{version}/#{system}/#{counter}.crash"
         crashReport = doc.root.elements["log"].text
-        
+
         File.open(fileName, 'w') {|f| f.write(crashReport) }
-        
+
       end
 
       counter = counter + 1
